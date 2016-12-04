@@ -155,6 +155,7 @@ class Linked_List:
         else:
             print_func(self.head.data)
             current_node = self.head
+
             while current_node.next is not None:
                 print_func(current_node.next.data)
                 current_node = current_node.next
