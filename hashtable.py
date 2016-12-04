@@ -1,13 +1,13 @@
 #!python
 
-from linkedlist import LinkedList
+from linked_list import Linked_List
 
 
 class HashTable(object):
 
     def __init__(self, init_size=8):
         """Initialize this hash table with the given initial size"""
-        self.buckets = [LinkedList() for i in range(init_size)]
+        self.buckets = [Linked_List() for i in range(init_size)]
 
     def __repr__(self):
         """Return a string representation of this hash table"""
@@ -19,35 +19,65 @@ class HashTable(object):
 
     def length(self):
         """Return the length of this hash table by traversing its buckets"""
-        # TODO: Count number of key-value entries in each of the buckets
-        pass
+        total = 0
+
+        for list in self.buckets:
+            total += list.length()
+
+        return total
 
     def contains(self, key):
         """Return True if this hash table contains the given key, or False"""
-        # TODO: Check if the given key exists in a bucket
-        pass
+        bucket = self.buckets[self._bucket_index(key)]
+        try:
+            bucket.find(lambda item: item[0] == key)
+        except ValueError as e:
+            return False
+        else:
+            return True
 
     def get(self, key):
         """Return the value associated with the given key, or raise KeyError"""
-        # TODO: Check if the given key exists and return its associated value
-        pass
+        bucket = self.buckets[self._bucket_index(key)]
+        found_item = None
+
+        try:
+            print(bucket.find(lambda item: item[0] == key))
+            found_item = bucket.find(lambda item: item[0] == key)[1]
+        except ValueError as e:
+            raise KeyError
+
+        return found_item
 
     def set(self, key, value):
         """Insert or update the given key with its associated value"""
-        # TODO: Insert or update the given key-value entry into a bucket
-        pass
+        bucket = self.buckets[self._bucket_index(key)]
+        bucket.upsert_first([key, value], lambda item: item[0] == key)
 
     def delete(self, key):
         """Delete the given key from this hash table, or raise KeyError"""
-        # TODO: Find the given key and delete its entry if found
-        pass
+        bucket = self.buckets[self._bucket_index(key)]
+        try:
+            bucket.delete(key, lambda item: item[0] == key)
+        except ValueError as e:
+            raise KeyError
 
     def keys(self):
         """Return a list of all keys in this hash table"""
-        # TODO: Collect all keys in each of the buckets
-        pass
+        key_list = []
+
+        for bucket in self.buckets:
+            bucket_list = list(bucket.as_list(lambda data: data[0]))
+            key_list.extend(bucket_list)
+
+        return key_list
 
     def values(self):
         """Return a list of all values in this hash table"""
-        # TODO: Collect all values in each of the buckets
-        pass
+        val_list = []
+
+        for bucket in self.buckets:
+            bucket_list = (bucket.as_list(lambda data: data[1]))
+            val_list.extend(bucket_list)
+
+        return val_list
