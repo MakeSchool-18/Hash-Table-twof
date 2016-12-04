@@ -17,6 +17,7 @@ class Linked_List:
 
     def append(self, data):
         new_node = Node(data, None)
+
         if self.count == 0:
             self.head = new_node
             self.tail = new_node
@@ -28,6 +29,7 @@ class Linked_List:
 
     def prepend(self, data):
         new_node = Node(data, None)
+
         if self.count == 0:
             self.head = new_node
             self.tail = new_node
@@ -42,9 +44,7 @@ class Linked_List:
         if filter_func is None:
             def filter_func(item): return item == data
 
-        try:
-            self.find(filter_func)
-        except ValueError as e:
+        if self.find(filter_func) is None:
             self.append(data)
             return
         else:
@@ -71,6 +71,7 @@ class Linked_List:
             raise ValueError
         else:
             current_node = self.head
+
             while current_node is not None:
                 if filter_func(current_node.data):
                     found = True
@@ -78,9 +79,9 @@ class Linked_List:
                     prev_found_node = None
                     break
                 elif filter_func(current_node.next.data):
+                    found = True
                     found_node = current_node.next
                     prev_found_node = current_node
-                    found = True
                     break
                 else:
                     current_node = current_node.next
@@ -109,7 +110,7 @@ class Linked_List:
 
     def find(self, filter_func):
         if self.count == 0:
-            raise ValueError
+            return None
         else:
             current_node = self.head
 
@@ -125,7 +126,7 @@ class Linked_List:
                 current_node = current_node.next
                 continue
 
-        raise ValueError
+        return None
 
     def as_list(self, array_builder=None):
         listed = []

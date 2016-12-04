@@ -1,5 +1,3 @@
-#!python
-
 from linked_list import Linked_List
 
 
@@ -29,25 +27,21 @@ class HashTable(object):
     def contains(self, key):
         """Return True if this hash table contains the given key, or False"""
         bucket = self.buckets[self._bucket_index(key)]
-        try:
-            bucket.find(lambda item: item[0] == key)
-        except ValueError as e:
-            return False
-        else:
+
+        if bucket.find(lambda item: item[0] == key) is not None:
             return True
+        else:
+            return False
 
     def get(self, key):
         """Return the value associated with the given key, or raise KeyError"""
         bucket = self.buckets[self._bucket_index(key)]
-        found_item = None
+        found_item = bucket.find(lambda item: item[0] == key)
 
-        try:
-            print(bucket.find(lambda item: item[0] == key))
-            found_item = bucket.find(lambda item: item[0] == key)[1]
-        except ValueError as e:
+        if found_item is not None:
+            return found_item[1]
+        else:
             raise KeyError
-
-        return found_item
 
     def set(self, key, value):
         """Insert or update the given key with its associated value"""
@@ -57,6 +51,7 @@ class HashTable(object):
     def delete(self, key):
         """Delete the given key from this hash table, or raise KeyError"""
         bucket = self.buckets[self._bucket_index(key)]
+
         try:
             bucket.delete(key, lambda item: item[0] == key)
         except ValueError as e:
@@ -67,7 +62,7 @@ class HashTable(object):
         key_list = []
 
         for bucket in self.buckets:
-            bucket_list = list(bucket.as_list(lambda data: data[0]))
+            bucket_list = bucket.as_list(lambda data: data[0])
             key_list.extend(bucket_list)
 
         return key_list
@@ -77,7 +72,7 @@ class HashTable(object):
         val_list = []
 
         for bucket in self.buckets:
-            bucket_list = (bucket.as_list(lambda data: data[1]))
+            bucket_list = bucket.as_list(lambda data: data[1])
             val_list.extend(bucket_list)
 
         return val_list
